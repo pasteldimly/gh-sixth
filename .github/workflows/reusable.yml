@@ -1,9 +1,22 @@
 name: reusable
 # this event allow this workflow to call from other workflows
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: name of depployed artifact files
+        required: false
+        default: dist
+        type: string
 jobs:
   j1:
     runs-on: ubuntu-latest
     steps:
+      - name: download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+      - name: list artifact files
+        run: ls -lh
       - name: o/p info.
         run: echo "deploy"
