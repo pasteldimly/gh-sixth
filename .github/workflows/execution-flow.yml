@@ -16,7 +16,7 @@ jobs:
           path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
-        #  check if cache is present or not using cache-hit
+        #  check if cache is present or not using cache-hit and install depen. if cache not present
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Lint code
