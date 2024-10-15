@@ -38,7 +38,7 @@ jobs:
       # if above step fails then this step will run. we ref. the above step using id
       - name: Upload test report
         # this step will run if above step fails else wont run
-        if: steps.run-tests.outcome == 'failure'
+        if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
