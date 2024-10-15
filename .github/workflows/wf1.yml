@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print deploy jo
-        run: ${{ needs.deploy.outputs.output1 }}
+        run: echo "${{ needs.deploy.outputs.output1 }}"
   j1:
     needs: [lint, deploy]
     # step will run if prev. jobs fails else job will be skipped
