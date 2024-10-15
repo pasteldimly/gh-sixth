@@ -73,9 +73,18 @@ jobs:
     needs: build
     # use reusable wf using "uses" cmd in job
     uses: ./.github/workflows/reusable.yml
-    # padd the req. inputs of reusable wf
+    # add the req. inputs of reusable wf
     with:
       artifact-name: dist-files
+    # add secret of reusable wf
+    # secrets:
+    #   secret1: ${{ secrets.secret1}}
+  j2:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: print deploy jo
+        run: ${{ needs.deploy.outputs.output1 }}
   j1:
     needs: [lint, deploy]
     # step will run if prev. jobs fails else job will be skipped

@@ -8,8 +8,17 @@ on:
         required: false
         default: dist
         type: string
+    secrets:
+      secret1:
+        required: false
+    outputs:
+      output1:
+        description: get the jo of j1 job
+        value: ${{ jobs.j1.outputs.output1 }}
 jobs:
   j1:
+    outputs:
+      output1: ${{ steps.step1.outputs.city }}
     runs-on: ubuntu-latest
     steps:
       - name: download artifact
@@ -20,3 +29,6 @@ jobs:
         run: ls -lh
       - name: o/p info.
         run: echo "deploy"
+      - name: jo1
+        id: step1
+        run: echo "city=mumbai" >> $GITHUB_OUTPUT
