@@ -1,0 +1,85 @@
+name: use reusable wf
+on:
+  push:
+    branches:
+      - main
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        #  check if cache is present or not using cache-hit and install depen. if cache not present
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Lint code
+        run: npm run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        #  check if cache is present or not using cache-hit
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Test code
+        # if current step fails the rem. steps in current job and rem. jobs will run normally
+        continue-on-error: true
+        run: npm run test
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: test.json
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        #  check if cache is present or not using cache-hit
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: Build website
+        id: build-website
+        run: npm run build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-files
+          path: dist
+  deploy:
+    needs: build
+    # use reusable wf using "uses" cmd in job
+    uses: ./.github/workflows/reusable.yml
+  j1:
+    needs: [lint, deploy]
+    # step will run if prev. jobs fails else job will be skipped
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: o/p info
+        run: |
+          echo "something went wrong"
+          echo ${{ toJSON(github) }}

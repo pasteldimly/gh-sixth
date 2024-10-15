@@ -1,0 +1,9 @@
+name: reusable
+# this event allow this workflow to call from other workflows
+on: workflow_call
+jobs:
+  j1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: o/p info.
+        run: echo "deploy"

@@ -7,9 +7,11 @@ jobs:
       matrix:
         nv: [16, 18]
         os: [ubuntu-latest, windows-latest]
+        # add comb. in the job
         include:
           - nv: 20
             os: ubuntu-latest
+        # remove comb. from the job
         exclude:
           - nv: 18
             os: windows-latest
