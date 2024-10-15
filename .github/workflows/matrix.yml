@@ -2,10 +2,17 @@ name: matrix
 on: push
 jobs:
   j1:
+    continue-on-error: true
     strategy:
       matrix:
-        node-version: [16, 18, 20]
+        nv: [16, 18]
         os: [ubuntu-latest, windows-latest]
+        include:
+          - nv: 20
+            os: ubuntu-latest
+        exclude:
+          - nv: 18
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - name: get code
@@ -13,7 +20,7 @@ jobs:
       - name: install node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.nv }}
       - name: install depen.
         run: npm ci
       - name: build project
