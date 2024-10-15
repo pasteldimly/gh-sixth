@@ -37,7 +37,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
-        # if current step fails the rem. step in current job and rem. jobs will execute normally
+        # if current step fails the rem. steps in current job and rem. jobs will run normally
         continue-on-error: true
         run: npm run test
       - name: Upload test report
