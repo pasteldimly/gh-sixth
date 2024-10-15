@@ -73,6 +73,8 @@ jobs:
     needs: build
     # use reusable wf using "uses" cmd in job
     uses: ./.github/workflows/reusable.yml
+    with:
+      artifact-name: dist-files
   j1:
     needs: [lint, deploy]
     # step will run if prev. jobs fails else job will be skipped
@@ -82,4 +84,4 @@ jobs:
       - name: o/p info
         run: |
           echo "something went wrong"
-          echo ${{ toJSON(github) }}
+          echo "${{ toJSON(github) }}"
