@@ -37,12 +37,10 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
-        id: run-tests
+        # if current step fails the rem. step in current job and rem. jobs will execute normally
+        continue-on-error: true
         run: npm run test
-      # if above step fails then this step will run. we ref. the above step using id
       - name: Upload test report
-        # this step will run if above step fails else wont run
-        if: failure() && steps.run-tests.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: test-report
